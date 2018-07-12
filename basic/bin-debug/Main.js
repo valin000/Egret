@@ -1,3 +1,4 @@
+/**基本显示 */
 var __reflect = (this && this.__reflect) || function (p, c, t) {
     p.__class__ = c, t ? t.push(c) : t = [c], p.__types__ = p.__types__ ? t.concat(p.__types__) : t;
 };
@@ -12,18 +13,16 @@ var Main = (function (_super) {
     __extends(Main, _super);
     function Main() {
         var _this = _super.call(this) || this;
-        _this.startLoad();
+        _this.once(egret.Event.ADDED_TO_STAGE, _this.onAddToStage, _this);
         return _this;
     }
-    Main.prototype.startLoad = function () {
-        var loader = new egret.ImageLoader();
-        loader.addEventListener(egret.Event.COMPLETE, this.onLoadComplete, this);
-        var url = "resource/assets/cartoon-egret_00.png";
-        loader.load(url);
+    Main.prototype.onAddToStage = function (event) {
+        var imgLoader = new egret.ImageLoader();
+        imgLoader.once(egret.Event.COMPLETE, this.imgLoadHandler, this);
+        imgLoader.load("resource/assets/cartoon-egret_00.png");
     };
-    Main.prototype.onLoadComplete = function (event) {
-        var loader = event.target;
-        var bmd = loader.data;
+    Main.prototype.imgLoadHandler = function (evt) {
+        var bmd = evt.currentTarget.data;
         var texture = new egret.Texture();
         texture.bitmapData = bmd;
         var bird = new egret.Bitmap(texture);
@@ -44,7 +43,8 @@ var Main = (function (_super) {
         this._txInfo.type = egret.TextFieldType.DYNAMIC;
         this._txInfo.lineSpacing = 6;
         this._txInfo.multiline = true;
-        this._txInfo.text = "轻触屏幕调整显示对象位置";
+        this._txInfo.text =
+            "轻触屏幕调整显示对象位置";
         this._bgInfo = new egret.Shape;
         this.addChildAt(this._bgInfo, this.numChildren - 1);
         this._bgInfo.x = this._txInfo.x;
